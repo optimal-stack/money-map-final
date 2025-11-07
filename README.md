@@ -1,6 +1,4 @@
-Got it 👍 — here’s a **pure text, no code** version of your README, written in a simple, personal style as if you authored it yourself:
 
----
 
 # Wallet - Expense Tracker
 

@@ -113,8 +113,9 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   statDivider: {
-    borderRightWidth: 1,
-    borderColor: COLORS.border,
+    width: 1,
+    backgroundColor: COLORS.border,
+    marginHorizontal: 8,
   },
   balanceStatLabel: {
     fontSize: 14,
@@ -253,6 +254,25 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10,
     paddingBottom: 5,
+  },
+  analyticsButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.card,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    gap: 6,
+    shadowColor: COLORS.shadow,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  analyticsButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: COLORS.primary,
   },
   transactionsList: {
     flex: 1,

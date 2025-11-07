@@ -17,15 +17,15 @@ export async function getTransactionsByUserId(req, res) {
 
 export async function createTransaction(req, res) {
   try {
-    const { title, amount, category, user_id } = req.body;
+    const { title, amount, category, user_id, festival } = req.body;
 
     if (!title || !user_id || !category || amount === undefined) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
     const transaction = await sql`
-      INSERT INTO transactions(user_id,title,amount,category)
-      VALUES (${user_id},${title},${amount},${category})
+      INSERT INTO transactions(user_id,title,amount,category,festival)
+      VALUES (${user_id},${title},${amount},${category},${festival || null})
       RETURNING *
     `;
 
@@ -33,6 +33,50 @@ export async function createTransaction(req, res) {
     res.status(201).json(transaction[0]);
   } catch (error) {
     console.log("Error creating the transaction", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+// New: get transactions for a specific festival
+export async function getTransactionsByFestival(req, res) {
+  try {
+    const { userId, festival } = req.params;
+
+    const transactions = await sql`
+      SELECT * FROM transactions
+      WHERE user_id = ${userId} AND festival = ${festival}
+      ORDER BY created_at DESC
+    `;
+
+    res.status(200).json(transactions);
+  } catch (error) {
+    console.log("Error getting the festival transactions", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+// New: summary scoped to a festival
+export async function getFestivalSummary(req, res) {
+  try {
+    const { userId, festival } = req.params;
+
+    const incomeResult = await sql`
+      SELECT COALESCE(SUM(amount), 0) as income FROM transactions
+      WHERE user_id = ${userId} AND festival = ${festival} AND amount > 0
+    `;
+
+    const expensesResult = await sql`
+      SELECT COALESCE(SUM(amount), 0) as expenses FROM transactions
+      WHERE user_id = ${userId} AND festival = ${festival} AND amount < 0
+    `;
+
+    res.status(200).json({
+      income: incomeResult[0].income,
+      expenses: expensesResult[0].expenses,
+      net: (parseFloat(incomeResult[0].income) || 0) + (parseFloat(expensesResult[0].expenses) || 0),
+    });
+  } catch (error) {
+    console.log("Error getting festival summary", error);
     res.status(500).json({ message: "Internal server error" });
   }
 }

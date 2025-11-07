@@ -10,6 +10,7 @@ import {
 import { useRouter } from "expo-router";
 import { useUser } from "@clerk/clerk-expo";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { API_URL } from "../../constants/api";
 import { styles } from "../../assets/styles/create.styles";
 import { COLORS } from "../../constants/colors";
@@ -25,15 +26,29 @@ const CATEGORIES = [
   { id: "other", name: "Other", icon: "ellipsis-horizontal" },
 ];
 
+const FESTIVALS = [
+  "None",
+  "Diwali",
+  "Durga Puja",
+  "Eid",
+  "Christmas",
+  "Pongal",
+  "Onam",
+  "Navratri",
+  "Holi",
+];
+
 const CreateScreen = () => {
   const router = useRouter();
   const { user } = useUser();
+  const { t } = useTranslation();
 
   const [title, setTitle] = useState("");
   const [amount, setAmount] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [isExpense, setIsExpense] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedFestival, setSelectedFestival] = useState("None");
 
   const handleCreate = async () => {
     // validations
@@ -62,6 +77,7 @@ const CreateScreen = () => {
           title,
           amount: formattedAmount,
           category: selectedCategory,
+          festival: selectedFestival === "None" ? null : selectedFestival,
         }),
       });
 
@@ -88,13 +104,13 @@ const CreateScreen = () => {
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color={COLORS.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>New Transaction</Text>
+        <Text style={styles.headerTitle}>{t("newTransaction")}</Text>
         <TouchableOpacity
           style={[styles.saveButtonContainer, isLoading && styles.saveButtonDisabled]}
           onPress={handleCreate}
           disabled={isLoading}
         >
-          <Text style={styles.saveButton}>{isLoading ? "Saving..." : "Save"}</Text>
+          <Text style={styles.saveButton}>{isLoading ? "..." : t("save")}</Text>
           {!isLoading && <Ionicons name="checkmark" size={18} color={COLORS.primary} />}
         </TouchableOpacity>
       </View>
@@ -113,7 +129,7 @@ const CreateScreen = () => {
               style={styles.typeIcon}
             />
             <Text style={[styles.typeButtonText, isExpense && styles.typeButtonTextActive]}>
-              Expense
+              {t("expense")}
             </Text>
           </TouchableOpacity>
 
@@ -129,7 +145,7 @@ const CreateScreen = () => {
               style={styles.typeIcon}
             />
             <Text style={[styles.typeButtonText, !isExpense && styles.typeButtonTextActive]}>
-              Income
+              {t("income")}
             </Text>
           </TouchableOpacity>
         </View>
@@ -139,7 +155,7 @@ const CreateScreen = () => {
           <Text style={styles.currencySymbol}>$</Text>
           <TextInput
             style={styles.amountInput}
-            placeholder="0.00"
+            placeholder={t("amountPlaceholder")}
             placeholderTextColor={COLORS.textLight}
             value={amount}
             onChangeText={setAmount}
@@ -157,7 +173,7 @@ const CreateScreen = () => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Transaction Title"
+            placeholder={t("transactionTitle")}
             placeholderTextColor={COLORS.textLight}
             value={title}
             onChangeText={setTitle}
@@ -166,7 +182,7 @@ const CreateScreen = () => {
 
         {/* TITLE */}
         <Text style={styles.sectionTitle}>
-          <Ionicons name="pricetag-outline" size={16} color={COLORS.text} /> Category
+          <Ionicons name="pricetag-outline" size={16} color={COLORS.text} /> {t("category")}
         </Text>
 
         <View style={styles.categoryGrid}>
@@ -192,6 +208,32 @@ const CreateScreen = () => {
                 ]}
               >
                 {category.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* FESTIVAL TAG */}
+        <Text style={styles.sectionTitle}>
+          <Ionicons name="gift-outline" size={16} color={COLORS.text} /> {t("festivalOptional")}
+        </Text>
+        <View style={styles.categoryGrid}>
+          {FESTIVALS.map((fest) => (
+            <TouchableOpacity
+              key={fest}
+              style={[
+                styles.categoryButton,
+                selectedFestival === fest && styles.categoryButtonActive,
+              ]}
+              onPress={() => setSelectedFestival(fest)}
+            >
+              <Text
+                style={[
+                  styles.categoryButtonText,
+                  selectedFestival === fest && styles.categoryButtonTextActive,
+                ]}
+              >
+                {fest}
               </Text>
             </TouchableOpacity>
           ))}
