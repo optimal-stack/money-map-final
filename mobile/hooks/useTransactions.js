@@ -20,7 +20,14 @@ export const useTransactions = (userId) => {
   // useCallback is used for performance reasons, it will memoize the function
   const fetchTransactions = useCallback(async () => {
     try {
-      const response = await fetch(`${API_URL}/transactions/${userId}`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
+      const response = await fetch(`${API_URL}/transactions/${userId}`, {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Failed to fetch transactions: ${response.status} ${errorText}`);
@@ -28,13 +35,26 @@ export const useTransactions = (userId) => {
       const data = await response.json();
       setTransactions(data);
     } catch (error) {
-      console.error("Error fetching transactions:", error);
+      if (error.name === 'AbortError') {
+        console.error("Error fetching transactions: Request timeout - Server may not be running");
+      } else if (error.message?.includes('Network request failed')) {
+        console.error("Error fetching transactions: Cannot connect to server. Make sure the backend server is running on", API_URL);
+      } else {
+        console.error("Error fetching transactions:", error);
+      }
     }
   }, [userId]);
 
   const fetchSummary = useCallback(async () => {
     try {
-      const response = await fetch(`${API_URL}/transactions/summary/${userId}`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+      
+      const response = await fetch(`${API_URL}/transactions/summary/${userId}`, {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Failed to fetch summary: ${response.status} ${errorText}`);
@@ -42,7 +62,13 @@ export const useTransactions = (userId) => {
       const data = await response.json();
       setSummary(data);
     } catch (error) {
-      console.error("Error fetching summary:", error);
+      if (error.name === 'AbortError') {
+        console.error("Error fetching summary: Request timeout - Server may not be running");
+      } else if (error.message?.includes('Network request failed')) {
+        console.error("Error fetching summary: Cannot connect to server. Make sure the backend server is running on", API_URL);
+      } else {
+        console.error("Error fetching summary:", error);
+      }
     }
   }, [userId]);
 

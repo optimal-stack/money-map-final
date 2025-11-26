@@ -12,8 +12,15 @@ const rateLimiter = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log("Rate limit error", error);
-    next(error);
+    // In development, allow requests to continue if rate limiter fails
+    // This prevents Upstash configuration issues from blocking local development
+    if (process.env.NODE_ENV !== "production") {
+      console.log("Rate limit error (continuing in dev mode):", error.message);
+      next();
+    } else {
+      console.log("Rate limit error", error);
+      next(error);
+    }
   }
 };
 

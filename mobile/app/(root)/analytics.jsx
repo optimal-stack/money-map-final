@@ -55,10 +55,7 @@ export default function AnalyticsScreen() {
   };
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(Math.abs(amount));
+    return `Rs ${Math.abs(amount).toFixed(2)}`;
   };
 
   const formatPercentage = (value, total) => {

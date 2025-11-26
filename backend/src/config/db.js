@@ -30,8 +30,9 @@ export async function initDB() {
     END $$;`;
 
     console.log("Database initialized successfully");
+    return true;
   } catch (error) {
     console.log("Error initializing DB", error);
-    process.exit(1); // status code 1 means failure, 0 success
+    throw error; // Throw error instead of exiting, let server handle it
   }
 }
