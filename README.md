@@ -1,8 +1,3 @@
-[5 tools called]
-
-Here’s a detailed README you can paste into your `README.md` (or into a new file). It’s tailored to your current codebase.
-
----
 
 ### Wallet App – Full-Stack Expense Tracker
 
