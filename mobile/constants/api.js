@@ -10,7 +10,7 @@
 //
 // The server runs on port 5003 by default (check your backend .env file for PORT).
 // Update the IP address below with your current IP:
-const LOCAL_API_URL = "http://192.168.0.102:5003/api";
+const LOCAL_API_URL = "http://192.168.56.1:5004/api";
 
 export const API_URL = process.env.EXPO_PUBLIC_API_URL || LOCAL_API_URL;
 

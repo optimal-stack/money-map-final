@@ -6,5 +6,5 @@ export default function AuthRoutesLayout() {
 
   if (isSignedIn) return <Redirect href={"/"} />;
 
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return <Stack screenOptions={{ headerShown: false  }} />;
 }

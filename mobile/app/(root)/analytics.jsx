@@ -357,7 +357,7 @@ export default function AnalyticsScreen() {
                           strokeWidth: 2,
                         },
                       ],
-                      legend: ["Income", "Expenses"],
+                      legend: ["Incomes", "Expenses"],
                     }}
                     width={chartWidth}
                     height={220}
@@ -377,16 +377,7 @@ export default function AnalyticsScreen() {
                     withShadow={false}
                   />
                 </View>
-                <View style={styles.legendContainer}>
-                  <View style={styles.legendItem}>
-                    <View style={[styles.legendDot, { backgroundColor: COLORS.income }]} />
-                    <Text style={styles.legendText}>Income</Text>
-                  </View>
-                  <View style={styles.legendItem}>
-                    <View style={[styles.legendDot, { backgroundColor: COLORS.expense }]} />
-                    <Text style={styles.legendText}>Expenses</Text>
-                  </View>
-                </View>
+                
               </View>
             )}
 
